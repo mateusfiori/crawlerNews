@@ -2,6 +2,8 @@
 
 from bs4 import BeautifulSoup
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 import pandas as pd
 import time
 
@@ -24,8 +26,6 @@ keywords_array = listToStr(pd.read_csv("./keywords.csv").values.tolist())
 old_links_array = listToStr(pd.read_csv("./old-links.csv").values.tolist())
 rss_array = listToStr(pd.read_csv("./rss.csv").values.tolist())
 
-print(old_links_array)
-
 while (True):
 
     #abre o arquivo de saida
@@ -35,8 +35,17 @@ while (True):
     for feed in rss_array:
 
         #requisicao 
-        result = requests.get(feed).text
+        #result = requests.get(feed).text
+        session = requests.Session()
+        retry = Retry(connect=3, backoff_factor=0.5)
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+        
+        result = session.get(feed).text
+
         soup = BeautifulSoup(result, 'xml')
+
         #print(soup.prettify())
 
         result1 = requests.get("https://br.advfn.com/indice/iee").text
