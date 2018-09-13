@@ -53,8 +53,12 @@ while (True):
 
         #data atual
         data = soup.find('pubDate').text
-        cotation = soup1.find(id="quoteElementPiece2").text
         
+        try:
+            cotation = soup1.find(id="quoteElementPiece2").text
+        except AttributeError:
+            cotation = "-" 
+
         #encontra todas as noticias
         noticias = soup.find_all('item')
         
