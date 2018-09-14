@@ -77,4 +77,4 @@ while (True):
                 print("Link adicionado: {} adicionado.".format(x))
 
     link_file.close()
-    time.sleep(60)
+    time.sleep(300)
